@@ -1,0 +1,50 @@
+# LoanFlow QA — Cursor rules
+
+## Context
+This repo builds a portfolio project targeting a QA Automation Intern role (Playwright, TypeScript, API testing, CI/CD, fintech/loan-origination domain). Full spec in `what_this.md` — read it before generating any code. Two parts: a minimal Next.js/Express loan-origination app (test target), and a Playwright+TS automation framework testing it, with CI and an AI failure-triage agent as the final phase.
+
+## Progress tracker — read first
+Before planning or implementing, read `engineering_progress.md`. Work only on the active phase. After each completed item, update that file (checkbox + changelog + current state). Do not skip ahead.
+
+## Build order — do not skip ahead
+1. Target app (frontend + backend + DB)
+2. Playwright UI suite (Page Object Model from the start)
+3. Playwright API suite + schema validation
+4. GitHub Actions CI
+5. README + architecture diagram + test strategy doc
+6. AI triage agent (last, only once 1-5 work)
+If asked to work on a later phase before an earlier one is done, flag it instead of proceeding silently.
+
+## Non-negotiables
+- Keep the target app small. 3-4 pages, 6-8 endpoints. All complexity budget goes to the test framework, not the app. Do not add features to LoanFlow the app beyond what's in `what_this.md`.
+- Every Playwright test file lives under `tests/ui/` or `tests/api/` — never mixed.
+- All UI tests use the Page Object Model in `pages/` — no raw `page.locator()` calls directly inside `*.spec.ts` files. If a selector is needed, it belongs in a page object method.
+- No `page.waitForTimeout()` for anything tied to the async status polling — use `utils/wait-helpers.ts` (explicit polling with timeout+backoff). This is a deliberate JD-relevant design decision; do not silently swap it for a sleep to "make it pass."
+- Every API response assertion validates against a schema in `schemas/` (zod or ajv) — status code alone is not sufficient.
+- Test data comes from `fixtures/application-factory.ts`, never hardcoded inline in a spec file.
+- TypeScript strict mode everywhere. No `any` unless justified with a comment.
+
+## Style
+- Terse, working code over long explanatory comments. Comment only non-obvious decisions (e.g., why polling, why a specific wait strategy).
+- Conventional commits (`feat:`, `fix:`, `test:`, `ci:`) — commit history is part of the portfolio.
+- No filler scaffolding (no unused boilerplate routes/pages beyond spec).
+
+## When generating tests
+- Tag critical-path tests with `@smoke` so `smoke.yml` can filter on them.
+- Every new endpoint gets: a happy-path test, a validation/negative-case test, and an auth test (unauthenticated + wrong-user).
+- State machine (`draft → submitted → under_review → approved/rejected`) illegal transitions must always be covered — this is a named JD signal ("understanding end-to-end system behavior"), don't skip it.
+
+## When generating CI config
+- `smoke.yml` must stay fast (~2 min budget) — only `@smoke`-tagged tests.
+- `regression.yml` runs full suite, sharded, on merge to `main`.
+- Always publish the Playwright HTML report as a workflow artifact.
+
+## Triage agent phase only
+- Build against the Playwright JSON reporter output + trace files, not by re-parsing console logs.
+- Classification categories are fixed: `flaky`, `real_regression`, `environment`. Don't invent new categories without updating `what_this.md`.
+- GitHub issue filing uses the GitHub REST API with a scoped token — never hardcode a token in code, use env vars.
+
+## Ask before
+- Adding any new page/endpoint not listed in `what_this.md`
+- Adding a new dependency not already implied by the tech stack section
+- Changing the build order

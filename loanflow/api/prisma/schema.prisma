@@ -1,0 +1,59 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+enum PropertyType {
+  single_family
+  condo
+  townhouse
+  multi_family
+}
+
+enum ApplicationStatus {
+  draft
+  submitted
+  under_review
+  approved
+  rejected
+}
+
+model User {
+  id            String        @id @default(cuid())
+  email         String        @unique
+  passwordHash  String
+  name          String
+  createdAt     DateTime      @default(now())
+  applications  Application[]
+}
+
+model Application {
+  id                    String              @id @default(cuid())
+  userId                String
+  user                  User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  borrowerName          String
+  borrowerEmail         String
+  loanAmount            Float
+  propertyType          PropertyType
+  annualIncome          Float
+  status                ApplicationStatus   @default(draft)
+  underwritingStartedAt DateTime?
+  underwritingDelayMs   Int?
+  createdAt             DateTime            @default(now())
+  updatedAt             DateTime            @updatedAt
+  documents             Document[]
+}
+
+model Document {
+  id            String      @id @default(cuid())
+  applicationId String
+  application   Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  filename      String
+  mimeType      String
+  sizeBytes     Int
+  uploadedAt    DateTime    @default(now())
+}
