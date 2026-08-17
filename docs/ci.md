@@ -23,9 +23,11 @@ On **failure**, a LangGraph triage agent reads `test-results/results.json` (Play
 
 Labels: `triage:flaky`, `triage:real_regression`, `triage:environment`. Locally the CLI is a **dry-run** (prints the issue body). CI passes `--file-issue` only on `failure()`.
 
+Optional `OPENAI_API_KEY` (GitHub secret or local `.env`): gpt-4o-mini writes a zod-checked investigation brief (severity, area, next checks) and embeddings power “resembles #N”. Unset → rules fill the same fields + Jaccard. Labels never come from the model. Never commit the key.
+
 ```bash
 cd loanflow-qa
-npx tsx agent/triage/cli.ts --report agent/triage/fixtures/sample-failed-report.json
+npx tsx agent/triage/cli.ts --report agent/triage/fixtures/sample-failed-report.json --issues agent/triage/fixtures/sample-past-issues.json
 # add --file-issue to POST (requires GITHUB_TOKEN and GITHUB_REPOSITORY=owner/repo)
 ```
 
@@ -46,5 +48,5 @@ PRs cannot merge until Smoke is green.
 cd loanflow-qa
 npx playwright test --grep @smoke
 npx playwright test
-npx tsx agent/triage/cli.ts --report agent/triage/fixtures/sample-failed-report.json
+npx tsx agent/triage/cli.ts --report agent/triage/fixtures/sample-failed-report.json --issues agent/triage/fixtures/sample-past-issues.json
 ```

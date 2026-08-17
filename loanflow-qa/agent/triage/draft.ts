@@ -1,4 +1,10 @@
-import type { Classification, FailedTest, TriageResult } from "./types";
+import type {
+  Classification,
+  FailedTest,
+  Investigation,
+  SimilarIssue,
+  TriageResult,
+} from "./types";
 import { classifyTest, suspectedRange } from "./classify";
 import { findTrace } from "./parse-report";
 
@@ -54,6 +60,37 @@ export function draftResult(
   };
 }
 
+export function applyEnrichment(
+  result: TriageResult,
+  extra: {
+    rationale: string;
+    similarIssue?: SimilarIssue;
+    investigation?: Investigation;
+  },
+): TriageResult {
+  const last = result.test.results[result.test.results.length - 1];
+  const rationale = extra.investigation?.rationale ?? extra.rationale;
+  return {
+    ...result,
+    rationale,
+    similarIssue: extra.similarIssue,
+    investigation: extra.investigation,
+    issueBody: buildBody({
+      classification: result.classification,
+      rationale,
+      test: result.test,
+      lastError: last?.errorMessage,
+      expected: result.expected,
+      actual: result.actual,
+      stack: result.stackExcerpt,
+      tracePath: result.tracePath,
+      range: result.suspectedRange,
+      similarIssue: extra.similarIssue,
+      investigation: extra.investigation,
+    }),
+  };
+}
+
 function buildBody(input: {
   classification: Classification;
   rationale: string;
@@ -64,6 +101,8 @@ function buildBody(input: {
   stack?: string;
   tracePath?: string;
   range?: string;
+  similarIssue?: SimilarIssue;
+  investigation?: Investigation;
 }): string {
   const lines = [
     `## Classification`,
@@ -96,6 +135,27 @@ function buildBody(input: {
   }
   if (input.stack && input.classification === "real_regression") {
     lines.push(``, `## Stack excerpt`, "```", input.stack, "```");
+  }
+
+  if (input.investigation) {
+    lines.push(
+      ``,
+      `## Investigation`,
+      `- **Severity:** ${input.investigation.severity}`,
+      `- **Look first:** ${input.investigation.suspectedArea}`,
+      `- **Brief source:** ${input.investigation.source === "openai" ? "OpenAI (zod-checked JSON)" : "rules fallback"}`,
+      ``,
+      `### What to check first`,
+      ...input.investigation.nextChecks.map((step, i) => `${i + 1}. ${step}`),
+    );
+  }
+
+  if (input.similarIssue) {
+    lines.push(
+      ``,
+      `## Similar past issue`,
+      `Resembles [#${input.similarIssue.number}](${input.similarIssue.url}) — ${input.similarIssue.title} (score ${input.similarIssue.score}, ${input.similarIssue.method}).`,
+    );
   }
 
   lines.push(

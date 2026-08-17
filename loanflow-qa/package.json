@@ -7,7 +7,8 @@
     "test:all": "playwright test",
     "test:smoke": "playwright test --grep @smoke",
     "test:headed": "playwright test tests/ui --headed",
-    "triage": "tsx agent/triage/cli.ts"
+    "triage": "tsx agent/triage/cli.ts",
+    "triage:demo": "tsx agent/triage/cli.ts --report agent/triage/fixtures/sample-failed-report.json --issues agent/triage/fixtures/sample-past-issues.json"
   },
   "devDependencies": {
     "@langchain/core": "^0.3.72",

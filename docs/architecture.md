@@ -62,4 +62,4 @@ Illegal transitions return **409**. Validation errors return **400**. Missing/ex
 - `schemas/` — zod. Every API assertion parses the body.
 - `utils/wait-helpers.ts` — timeout + backoff for async status.
 - `utils/api-client.ts` — Playwright `APIRequestContext` against `:4000`.
-- `agent/triage/` — LangGraph: parse JSON report → classify (`flaky` / `real_regression` / `environment`) → draft issue → optional GitHub file.
+- `agent/triage/` — LangGraph: parse → classify (rules) → enrich (optional LLM rationale + RAG) → optional GitHub file.

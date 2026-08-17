@@ -9,7 +9,7 @@ npx playwright install chromium
 npx playwright test tests/ui
 npx playwright test tests/api
 npx playwright test --grep @smoke
-npm run triage -- --report agent/triage/fixtures/sample-failed-report.json
+npm run triage -- --report agent/triage/fixtures/sample-failed-report.json --issues agent/triage/fixtures/sample-past-issues.json
 ```
 
 If LoanFlow is not running, Playwright starts `loanflow` and waits for `:3000` and `:4000`.

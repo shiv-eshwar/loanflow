@@ -66,8 +66,11 @@ CI failures are classified from the Playwright **JSON reporter** (plus traces), 
 
 `--file-issue` opens a GitHub Issue labeled `triage:<class>`. Token from env only.
 
+If the draft is similar to a past `triage:*` issue, the body includes **Resembles #N**. The issue also has **severity**, **look first**, and **what to check first**.
+
+With `OPENAI_API_KEY`, that brief is gpt-4o-mini JSON **parsed with the same zod style as API tests**; without it, a rule fallback fills the same fields. The key is optional — CI works if the secret is missing. The model cannot change the three labels.
+
 ## Out of scope (for now)
 
 - Allure
 - Multi-browser matrix (Chromium only — keeps smoke fast)
-- RAG over past issues (stretch)

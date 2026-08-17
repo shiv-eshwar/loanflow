@@ -78,12 +78,13 @@ Both publish the Playwright HTML report as an artifact. Failed runs also upload 
 
 ```bash
 cd loanflow-qa
-npm run triage -- --report agent/triage/fixtures/sample-failed-report.json
-npm run triage -- --report agent/triage/fixtures/sample-flaky-report.json
-npm run triage -- --report agent/triage/fixtures/sample-environment-report.json
+cp .env.example .env   # optional: set OPENAI_API_KEY locally; never commit .env
+npm run triage -- --report agent/triage/fixtures/sample-failed-report.json --issues agent/triage/fixtures/sample-past-issues.json
+npm run triage -- --report agent/triage/fixtures/sample-flaky-report.json --issues agent/triage/fixtures/sample-past-issues.json
+npm run triage -- --report agent/triage/fixtures/sample-environment-report.json --issues agent/triage/fixtures/sample-past-issues.json
 ```
 
-Dry-run prints the issue body. `--file-issue` posts to GitHub using `GITHUB_TOKEN` / `GH_TOKEN` (never hardcoded).
+Dry-run prints the issue body (severity, “look first”, next checks, resembles #N). `--file-issue` posts to GitHub using `GITHUB_TOKEN` / `GH_TOKEN` (never hardcoded). `OPENAI_API_KEY` is optional: with it, the enrich node asks gpt-4o-mini for a **zod-checked** JSON brief and uses embeddings for RAG. The three labels still come from rules — the model cannot override them.
 
 ## Stack
 

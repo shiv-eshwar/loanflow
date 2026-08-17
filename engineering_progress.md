@@ -25,10 +25,10 @@ Status values: `not_started` | `active` | `blocked` | `done`
 | Active phase | none (phases 1–6 complete) |
 | Overall status | `done` |
 | Last updated | 2026-08-17 |
-| Last completed item | Branch protection on `main` + README metrics; regression 1m48s green |
+| Last completed item | OpenAI zod-checked investigation brief + embeddings RAG |
 | Blockers | none |
 
-Phases 1–6 are `done`. Stretch RAG stays out of scope (D5). GitHub: https://github.com/shiv-eshwar/loanflow
+Phases 1–6 are `done`. Stretch RAG is in the triage enrich node. GitHub: https://github.com/shiv-eshwar/loanflow
 
 ---
 
@@ -48,7 +48,7 @@ None open.
 | D2 | `/login` page included (required for UI auth). |
 | D3 | Express API on `:4000`, not Next.js API routes. Next.js rewrites `/api/*` to Express. |
 | D4 | zod for API response schema validation. |
-| D5 | LangGraph for the failure-triage agent. Stretch RAG deferred. |
+| D5 | LangGraph for the failure-triage agent. Stretch RAG over past `triage:*` GitHub issues. |
 
 ---
 
@@ -187,11 +187,11 @@ Status: `done`
 - [x] Classifies only: `flaky` | `real_regression` | `environment`
 - [x] Real regressions: failing assertion, stack trace, diff vs last-known-good, drafted bug report
 - [x] Files GitHub Issue via REST API; token from env, never hardcoded
-- [ ] Stretch: RAG over past issues (“resembles issue #N”) — deferred (out of this pass)
+- [x] Stretch: RAG over past issues (“resembles issue #N”)
 
 **Phase 6 exit:** agent runs on a failed report and can file a classified issue.
 
-CLI: `npx tsx agent/triage/cli.ts --report …` (dry-run). `--file-issue` on CI `failure()`. Fixtures: failed → `real_regression`, flaky retry → `flaky`, ECONNREFUSED → `environment`.
+CLI: `npx tsx agent/triage/cli.ts --report …` (dry-run). `--file-issue` on CI `failure()`. Fixtures: failed → `real_regression`, flaky retry → `flaky`, ECONNREFUSED → `environment`. `--issues` fixture corpus can print **Resembles #N**. `OPENAI_API_KEY` optional (rationale + embeddings); rules still own the label.
 
 ---
 
@@ -233,3 +233,5 @@ CLI: `npx tsx agent/triage/cli.ts --report …` (dry-run). `--file-issue` on CI 
 | 2026-08-17 | Phase 6 CI | `smoke.yml` + `regression.yml`: `issues: write`, JSON/trace artifacts, triage `--file-issue` on `failure()`. |
 | 2026-08-17 | Phase 6 exit | Fixtures classify correctly (regression / flaky / environment). Docs updated. Stretch RAG not built. |
 | 2026-08-17 | Close-out | README metrics (42 tests; smoke ~9s; regression 1m48s). Branch protection on `main`. |
+| 2026-08-17 | Stretch RAG | Optional LLM rationale + GitHub-issue RAG in enrich node. Labels still from rules. |
+| 2026-08-17 | OpenAI brief | zod-checked gpt-4o-mini investigation (severity, area, next checks); embeddings RAG when key set. |

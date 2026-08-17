@@ -1,0 +1,20 @@
+[
+  {
+    "number": 12,
+    "title": "[real_regression] illegal status transitions return 409",
+    "body": "Assertion mismatch in tests/api/applications.spec.ts. Expected: 409 Received: 200 when skipping draft to approved. Classification real_regression.",
+    "url": "https://github.com/shiv-eshwar/loanflow/issues/12"
+  },
+  {
+    "number": 8,
+    "title": "[flaky] apply flow timed out waiting for status badge",
+    "body": "Timeout waiting for status badge then passed on retry. Timing related, not an assertion mismatch.",
+    "url": "https://github.com/shiv-eshwar/loanflow/issues/8"
+  },
+  {
+    "number": 3,
+    "title": "[environment] login ECONNREFUSED on API port 4000",
+    "body": "apiRequestContext.post connect ECONNREFUSED 127.0.0.1:4000 — Express was not running.",
+    "url": "https://github.com/shiv-eshwar/loanflow/issues/3"
+  }
+]
