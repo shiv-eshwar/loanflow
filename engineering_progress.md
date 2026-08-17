@@ -25,7 +25,7 @@ Status values: `not_started` | `active` | `blocked` | `done`
 | Active phase | none (phases 1–6 complete) |
 | Overall status | `done` |
 | Last updated | 2026-08-17 |
-| Last completed item | Phase 6 exit — LangGraph triage CLI + CI hook on failure |
+| Last completed item | Branch protection on `main` + README metrics; regression 1m48s green |
 | Blockers | none |
 
 Phases 1–6 are `done`. Stretch RAG stays out of scope (D5). GitHub: https://github.com/shiv-eshwar/loanflow
@@ -158,6 +158,7 @@ Status: `done`
 - [x] `smoke.yml` — on PR; `@smoke` only; ~2 min budget; HTML report artifact
 - [x] `regression.yml` — on merge to `main`; full suite; 2–3 shards; HTML report artifact
 - [x] Branch protection / PR check documented (enable on GitHub when repo exists)
+- [x] Branch protection enabled on `main` (PR + required `smoke` check)
 
 **Phase 4 exit:** both workflows exist and publish the Playwright HTML report.
 
@@ -231,3 +232,4 @@ CLI: `npx tsx agent/triage/cli.ts --report …` (dry-run). `--file-issue` on CI 
 | 2026-08-17 | Phase 6 agent | `loanflow-qa/agent/triage/`: parse JSON → classify → draft → optional GitHub file. Script `npm run triage`. |
 | 2026-08-17 | Phase 6 CI | `smoke.yml` + `regression.yml`: `issues: write`, JSON/trace artifacts, triage `--file-issue` on `failure()`. |
 | 2026-08-17 | Phase 6 exit | Fixtures classify correctly (regression / flaky / environment). Docs updated. Stretch RAG not built. |
+| 2026-08-17 | Close-out | README metrics (42 tests; smoke ~9s; regression 1m48s). Branch protection on `main`. |

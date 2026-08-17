@@ -8,6 +8,12 @@ Borrowers apply, upload documents, and watch underwriting move through a real st
 
 The app stays small on purpose. Depth is in the tests: Page Object Model, schema-checked API responses, explicit polling for async underwriting, GitHub Actions, and a LangGraph agent that triages CI failures.
 
+| Metric | Value |
+|---|---|
+| Playwright tests | **42** (14 UI + 28 API) |
+| `@smoke` | 4 tests, ~9s locally |
+| Last regression on `main` | green, **1m48s** ([run 32051106630](https://github.com/shiv-eshwar/loanflow/actions/runs/32051106630)) |
+
 ## Layout
 
 | Path | What it is |
@@ -66,7 +72,7 @@ In production I would not poll a public GET that mutates state. I would use **te
 | [`.github/workflows/smoke.yml`](.github/workflows/smoke.yml) | Pull request | `@smoke` only (fast critical path) |
 | [`.github/workflows/regression.yml`](.github/workflows/regression.yml) | Push to `main` | Full suite, 3 shards |
 
-Both publish the Playwright HTML report as an artifact. Failed runs also upload JSON + traces and run the **failure-triage agent** (files issues labeled `triage:flaky`, `triage:real_regression`, or `triage:environment`). See [docs/ci.md](docs/ci.md).
+Both publish the Playwright HTML report as an artifact. Failed runs also upload JSON + traces and run the **failure-triage agent** (files issues labeled `triage:flaky`, `triage:real_regression`, or `triage:environment`). `main` requires a PR with the **Smoke** check green. See [docs/ci.md](docs/ci.md).
 
 ## Failure triage
 

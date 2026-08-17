@@ -29,16 +29,16 @@ npx tsx agent/triage/cli.ts --report agent/triage/fixtures/sample-failed-report.
 # add --file-issue to POST (requires GITHUB_TOKEN and GITHUB_REPOSITORY=owner/repo)
 ```
 
-## Branch protection (enable on GitHub)
+## Branch protection
 
-Actions cannot turn this on by themselves. In the GitHub repo:
+Enabled on `main`:
 
-1. Settings → Branches → Add rule for `main`
-2. Require a pull request before merging
-3. Require status checks to pass → select **Smoke** (`smoke.yml` / job `smoke`)
-4. Do not allow bypassing for admins if you want the same gate for everyone
+- Pull requests required to merge (0 approving reviews — solo repo)
+- Status check **smoke** must pass (`smoke.yml` / job `smoke`)
+- Force pushes and branch deletion off
+- Admin bypass left on so the owner can still push `main` (regression stays push-triggered)
 
-Until that is enabled, PRs still run smoke, but GitHub will not block merge.
+PRs cannot merge until Smoke is green.
 
 ## Local equivalent
 
