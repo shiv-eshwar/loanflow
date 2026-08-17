@@ -1,0 +1,33 @@
+{
+  "suites": [
+    {
+      "title": "API auth",
+      "file": "tests/api/auth.spec.ts",
+      "suites": [],
+      "specs": [
+        {
+          "title": "login returns a JWT",
+          "ok": false,
+          "file": "tests/api/auth.spec.ts",
+          "tests": [
+            {
+              "projectName": "chromium",
+              "results": [
+                {
+                  "status": "failed",
+                  "retry": 0,
+                  "duration": 80,
+                  "error": {
+                    "message": "apiRequestContext.post: connect ECONNREFUSED 127.0.0.1:4000",
+                    "stack": "Error: connect ECONNREFUSED 127.0.0.1:4000\n    at APIRequestContext.post"
+                  },
+                  "attachments": []
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

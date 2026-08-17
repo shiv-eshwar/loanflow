@@ -22,13 +22,13 @@ Status values: `not_started` | `active` | `blocked` | `done`
 
 | Field | Value |
 |---|---|
-| Active phase | **6 — AI failure-triage agent** |
-| Overall status | `active` |
+| Active phase | none (phases 1–6 complete) |
+| Overall status | `done` |
 | Last updated | 2026-08-17 |
-| Last completed item | Phase 5 exit — README, architecture, test strategy, CI docs |
+| Last completed item | Phase 6 exit — LangGraph triage CLI + CI hook on failure |
 | Blockers | none |
 
-Phases 1–5 are `done`. Phase 6 is active but **not started**. D5 still open. GitHub: https://github.com/shiv-eshwar/loanflow
+Phases 1–6 are `done`. Stretch RAG stays out of scope (D5). GitHub: https://github.com/shiv-eshwar/loanflow
 
 ---
 
@@ -36,9 +36,7 @@ Phases 1–5 are `done`. Phase 6 is active but **not started**. D5 still open. G
 
 Do not silently pick these. Confirm with the user, then move the decision into **Locked decisions**.
 
-| ID | Decision | Needed by | Options / recommendation |
-|---|---|---|---|
-| D5 | Triage agent framework | Phase 6 | LangGraph. Spec allows LangGraph or CrewAI. |
+None open.
 
 ---
 
@@ -50,6 +48,7 @@ Do not silently pick these. Confirm with the user, then move the decision into *
 | D2 | `/login` page included (required for UI auth). |
 | D3 | Express API on `:4000`, not Next.js API routes. Next.js rewrites `/api/*` to Express. |
 | D4 | zod for API response schema validation. |
+| D5 | LangGraph for the failure-triage agent. Stretch RAG deferred. |
 
 ---
 
@@ -181,15 +180,17 @@ Status: `done`
 
 ## Phase 6 — AI failure-triage agent
 
-Status: `active` — not started. Do not start until asked.
+Status: `done`
 
-- [ ] Reads Playwright JSON reporter + trace files (not console logs)
-- [ ] Classifies only: `flaky` | `real_regression` | `environment`
-- [ ] Real regressions: failing assertion, stack trace, diff vs last-known-good, drafted bug report
-- [ ] Files GitHub Issue via REST API; token from env, never hardcoded
-- [ ] Stretch: RAG over past issues (“resembles issue #N”)
+- [x] Reads Playwright JSON reporter + trace files (not console logs)
+- [x] Classifies only: `flaky` | `real_regression` | `environment`
+- [x] Real regressions: failing assertion, stack trace, diff vs last-known-good, drafted bug report
+- [x] Files GitHub Issue via REST API; token from env, never hardcoded
+- [ ] Stretch: RAG over past issues (“resembles issue #N”) — deferred (out of this pass)
 
 **Phase 6 exit:** agent runs on a failed report and can file a classified issue.
+
+CLI: `npx tsx agent/triage/cli.ts --report …` (dry-run). `--file-issue` on CI `failure()`. Fixtures: failed → `real_regression`, flaky retry → `flaky`, ECONNREFUSED → `environment`.
 
 ---
 
@@ -226,3 +227,7 @@ Status: `active` — not started. Do not start until asked.
 | 2026-08-17 | Clone DX | `loanflow/scripts/ensure-env.cjs` copies `.env.example` on seed; Playwright `dev-ready.cjs` waits for :3000 and :4000. |
 | 2026-08-17 | Phase 4 verify | `npx playwright test --grep @smoke` — 4 passed (~9s). |
 | 2026-08-17 | Phase 5 docs | Root README (run app/tests/CI + polling vs sleep); `docs/architecture.md`, `docs/test-strategy.md`, `docs/ci.md`. Phase 6 active, not started. |
+| 2026-08-17 | D5 locked | LangGraph for failure triage. Stretch RAG deferred. |
+| 2026-08-17 | Phase 6 agent | `loanflow-qa/agent/triage/`: parse JSON → classify → draft → optional GitHub file. Script `npm run triage`. |
+| 2026-08-17 | Phase 6 CI | `smoke.yml` + `regression.yml`: `issues: write`, JSON/trace artifacts, triage `--file-issue` on `failure()`. |
+| 2026-08-17 | Phase 6 exit | Fixtures classify correctly (regression / flaky / environment). Docs updated. Stretch RAG not built. |

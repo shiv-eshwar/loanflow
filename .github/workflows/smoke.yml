@@ -8,6 +8,10 @@ concurrency:
   group: smoke-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: read
+  issues: write
+
 jobs:
   smoke:
     runs-on: ubuntu-latest
@@ -48,5 +52,24 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: playwright-report-smoke
-          path: loanflow-qa/playwright-report
+          path: |
+            loanflow-qa/playwright-report
+            loanflow-qa/test-results/results.json
           retention-days: 14
+
+      - name: Upload traces on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-traces-smoke
+          path: loanflow-qa/test-results
+          retention-days: 7
+
+      - name: Triage failures
+        if: failure()
+        working-directory: loanflow-qa
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GITHUB_SHA: ${{ github.sha }}
+        run: npx tsx agent/triage/cli.ts --report test-results/results.json --traces test-results --file-issue

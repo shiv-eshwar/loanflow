@@ -54,8 +54,20 @@ See the root README for why polling is used here and what a production suite wou
 
 Every API JSON body (2xx and 4xx) is `safeParse`’d with zod. Status code alone is not a pass.
 
+## Failure triage
+
+CI failures are classified from the Playwright **JSON reporter** (plus traces), not console logs:
+
+| Label | When |
+|---|---|
+| `flaky` | Failed then passed on retry, or timeout/wait without a hard assertion |
+| `environment` | Connection refused, browser launch, 5xx, webServer |
+| `real_regression` | Assertion / schema / status-code mismatch that did not recover |
+
+`--file-issue` opens a GitHub Issue labeled `triage:<class>`. Token from env only.
+
 ## Out of scope (for now)
 
 - Allure
 - Multi-browser matrix (Chromium only — keeps smoke fast)
-- AI failure triage (Phase 6)
+- RAG over past issues (stretch)

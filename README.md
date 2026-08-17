@@ -6,7 +6,7 @@ Borrowers apply, upload documents, and watch underwriting move through a real st
 
 `draft → submitted → under_review → approved | rejected`
 
-The app stays small on purpose. Depth is in the tests: Page Object Model, schema-checked API responses, explicit polling for async underwriting, and GitHub Actions smoke/regression.
+The app stays small on purpose. Depth is in the tests: Page Object Model, schema-checked API responses, explicit polling for async underwriting, GitHub Actions, and a LangGraph agent that triages CI failures.
 
 ## Layout
 
@@ -66,11 +66,22 @@ In production I would not poll a public GET that mutates state. I would use **te
 | [`.github/workflows/smoke.yml`](.github/workflows/smoke.yml) | Pull request | `@smoke` only (fast critical path) |
 | [`.github/workflows/regression.yml`](.github/workflows/regression.yml) | Push to `main` | Full suite, 3 shards |
 
-Both publish the Playwright HTML report as an artifact. See [docs/ci.md](docs/ci.md) to require smoke on PRs (branch protection).
+Both publish the Playwright HTML report as an artifact. Failed runs also upload JSON + traces and run the **failure-triage agent** (files issues labeled `triage:flaky`, `triage:real_regression`, or `triage:environment`). See [docs/ci.md](docs/ci.md).
+
+## Failure triage
+
+```bash
+cd loanflow-qa
+npm run triage -- --report agent/triage/fixtures/sample-failed-report.json
+npm run triage -- --report agent/triage/fixtures/sample-flaky-report.json
+npm run triage -- --report agent/triage/fixtures/sample-environment-report.json
+```
+
+Dry-run prints the issue body. `--file-issue` posts to GitHub using `GITHUB_TOKEN` / `GH_TOKEN` (never hardcoded).
 
 ## Stack
 
-Next.js, TypeScript, Express, Prisma/SQLite, Playwright, zod, GitHub Actions.
+Next.js, TypeScript, Express, Prisma/SQLite, Playwright, zod, GitHub Actions, LangGraph.
 
 ## Docs
 

@@ -1,0 +1,33 @@
+{
+  "suites": [
+    {
+      "title": "API applications",
+      "file": "tests/api/applications.spec.ts",
+      "suites": [],
+      "specs": [
+        {
+          "title": "illegal status transitions return 409",
+          "ok": false,
+          "file": "tests/api/applications.spec.ts",
+          "tests": [
+            {
+              "projectName": "chromium",
+              "results": [
+                {
+                  "status": "failed",
+                  "retry": 0,
+                  "duration": 412,
+                  "error": {
+                    "message": "Error: Expected: 409\nReceived: 200",
+                    "stack": "Error: Expected: 409\nReceived: 200\n    at tests/api/applications.spec.ts:190:28"
+                  },
+                  "attachments": []
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

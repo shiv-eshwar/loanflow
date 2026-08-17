@@ -19,6 +19,16 @@ Workflows live at the **repo root** (`.github/workflows/`). GitHub Actions only 
 
 Each job: install app → `prisma generate` + seed → install QA → Chromium → tests. `CI=true` so Playwright does not reuse a local server and retries once.
 
+On **failure**, a LangGraph triage agent reads `test-results/results.json` (Playwright JSON reporter, not logs), classifies each failure as `flaky` | `real_regression` | `environment`, and files a GitHub Issue labeled `triage:<class>`. Needs `permissions.issues: write` (already set). Default `GITHUB_TOKEN` is enough.
+
+Labels: `triage:flaky`, `triage:real_regression`, `triage:environment`. Locally the CLI is a **dry-run** (prints the issue body). CI passes `--file-issue` only on `failure()`.
+
+```bash
+cd loanflow-qa
+npx tsx agent/triage/cli.ts --report agent/triage/fixtures/sample-failed-report.json
+# add --file-issue to POST (requires GITHUB_TOKEN and GITHUB_REPOSITORY=owner/repo)
+```
+
 ## Branch protection (enable on GitHub)
 
 Actions cannot turn this on by themselves. In the GitHub repo:
@@ -36,4 +46,5 @@ Until that is enabled, PRs still run smoke, but GitHub will not block merge.
 cd loanflow-qa
 npx playwright test --grep @smoke
 npx playwright test
+npx tsx agent/triage/cli.ts --report agent/triage/fixtures/sample-failed-report.json
 ```

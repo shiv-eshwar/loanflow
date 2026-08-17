@@ -6,13 +6,17 @@
     "test:api": "playwright test tests/api",
     "test:all": "playwright test",
     "test:smoke": "playwright test --grep @smoke",
-    "test:headed": "playwright test tests/ui --headed"
+    "test:headed": "playwright test tests/ui --headed",
+    "triage": "tsx agent/triage/cli.ts"
   },
   "devDependencies": {
+    "@langchain/core": "^0.3.72",
+    "@langchain/langgraph": "^0.2.74",
     "@playwright/test": "^1.52.0",
     "@types/jsonwebtoken": "^9.0.9",
     "@types/node": "^22.15.3",
     "jsonwebtoken": "^9.0.2",
+    "tsx": "^4.19.4",
     "typescript": "^5.8.3",
     "zod": "^3.24.4"
   }

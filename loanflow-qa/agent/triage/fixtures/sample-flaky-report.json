@@ -1,0 +1,39 @@
+{
+  "suites": [
+    {
+      "title": "apply flow",
+      "file": "tests/ui/apply-flow.spec.ts",
+      "suites": [],
+      "specs": [
+        {
+          "title": "@smoke apply → upload → poll to approved",
+          "ok": true,
+          "file": "tests/ui/apply-flow.spec.ts",
+          "tests": [
+            {
+              "projectName": "chromium",
+              "results": [
+                {
+                  "status": "timedOut",
+                  "retry": 0,
+                  "duration": 15000,
+                  "error": {
+                    "message": "Timeout: waiting for status badge",
+                    "stack": "Timeout: waiting for status badge\n    at waitForCondition"
+                  },
+                  "attachments": []
+                },
+                {
+                  "status": "passed",
+                  "retry": 1,
+                  "duration": 8200,
+                  "attachments": []
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
