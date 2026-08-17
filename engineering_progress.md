@@ -22,13 +22,13 @@ Status values: `not_started` | `active` | `blocked` | `done`
 
 | Field | Value |
 |---|---|
-| Active phase | **3 — Playwright API suite** |
+| Active phase | **6 — AI failure-triage agent** |
 | Overall status | `active` |
 | Last updated | 2026-08-17 |
-| Last completed item | Phase 2 exit — 14 UI tests passed |
+| Last completed item | Phase 5 exit — README, architecture, test strategy, CI docs |
 | Blockers | none |
 
-Phase 2 is `done`. Phase 3 is active but **not started**. D4 (zod vs ajv) still open. GitHub: https://github.com/shiv-eshwar/loanflow
+Phases 1–5 are `done`. Phase 6 is active but **not started**. D5 still open. GitHub: https://github.com/shiv-eshwar/loanflow
 
 ---
 
@@ -38,7 +38,6 @@ Do not silently pick these. Confirm with the user, then move the decision into *
 
 | ID | Decision | Needed by | Options / recommendation |
 |---|---|---|---|
-| D4 | Schema library | Phase 3 | zod (fits TypeScript stack). Spec allows zod or ajv. |
 | D5 | Triage agent framework | Phase 6 | LangGraph. Spec allows LangGraph or CrewAI. |
 
 ---
@@ -50,6 +49,7 @@ Do not silently pick these. Confirm with the user, then move the decision into *
 | D1 | `loanflow/` + `loanflow-qa/` in this workspace; split to two GitHub repos later if needed. |
 | D2 | `/login` page included (required for UI auth). |
 | D3 | Express API on `:4000`, not Next.js API routes. Next.js rewrites `/api/*` to Express. |
+| D4 | zod for API response schema validation. |
 
 ---
 
@@ -132,21 +132,21 @@ POM from day 1. No `page.locator()` in `*.spec.ts`. No `page.waitForTimeout()` f
 
 ## Phase 3 — Playwright API suite + schema validation
 
-Status: `active` — not started
+Status: `done`
 
 ### 3.1 API harness
 
-- [ ] `utils/api-client.ts`
-- [ ] `schemas/application.schema.ts` (and auth/list/document schemas as needed)
-- [ ] Every response assertion validates schema — status code alone is not enough
+- [x] `utils/api-client.ts`
+- [x] `schemas/application.schema.ts` (and auth/list/document schemas as needed)
+- [x] Every response assertion validates schema — status code alone is not enough
 
 ### 3.2 API specs (`tests/api/` only)
 
-- [ ] `auth.spec.ts` — token required, expired token, wrong-user 403
-- [ ] `applications.spec.ts` — status codes 2xx/4xx/401/403/404/422; illegal transitions 409/400
-- [ ] `schema-validation.spec.ts` — types and enums, not just "field exists"
-- [ ] Boundary: oversized upload, wrong file type, missing multipart fields
-- [ ] Every endpoint has: happy path + validation/negative + unauthenticated + wrong-user
+- [x] `auth.spec.ts` — token required, expired token, wrong-user 403
+- [x] `applications.spec.ts` — status codes 2xx/4xx/401/403/404; validation is **400** (app does not return 422); illegal transitions 409
+- [x] `schema-validation.spec.ts` — types and enums, not just "field exists"
+- [x] Boundary: oversized upload, wrong file type, missing multipart fields
+- [x] Every endpoint has: happy path + validation/negative + unauthenticated + wrong-user
 
 **Phase 3 exit:** API suite green locally; schemas used on every response assertion.
 
@@ -154,24 +154,26 @@ Status: `active` — not started
 
 ## Phase 4 — GitHub Actions CI
 
-Status: `not_started` — blocked on Phase 3
+Status: `done`
 
-- [ ] `smoke.yml` — on PR; `@smoke` only; ~2 min budget; HTML report artifact
-- [ ] `regression.yml` — on merge to `main`; full suite; 2–3 shards; HTML report artifact
-- [ ] Branch protection / PR check documented (enable on GitHub when repo exists)
+- [x] `smoke.yml` — on PR; `@smoke` only; ~2 min budget; HTML report artifact
+- [x] `regression.yml` — on merge to `main`; full suite; 2–3 shards; HTML report artifact
+- [x] Branch protection / PR check documented (enable on GitHub when repo exists)
 
 **Phase 4 exit:** both workflows exist and publish the Playwright HTML report.
+
+Workflows are at repo-root `.github/workflows/` (monorepo; Actions only reads that path). Local `@smoke`: 4 passed in ~9s.
 
 ---
 
 ## Phase 5 — Docs
 
-Status: `not_started` — blocked on Phase 4
+Status: `done`
 
-- [ ] README (how to run app, how to run tests, CI)
-- [ ] Architecture diagram
-- [ ] Test strategy doc
-- [ ] README section: why polling instead of sleep; what a production suite would use (webhook/event-driven hooks)
+- [x] README (how to run app, how to run tests, CI)
+- [x] Architecture diagram
+- [x] Test strategy doc
+- [x] README section: why polling instead of sleep; what a production suite would use (webhook/event-driven hooks)
 
 **Phase 5 exit:** those four artifacts exist and match what was built.
 
@@ -179,7 +181,7 @@ Status: `not_started` — blocked on Phase 4
 
 ## Phase 6 — AI failure-triage agent
 
-Status: `not_started` — blocked on Phase 5. Do not start early.
+Status: `active` — not started. Do not start until asked.
 
 - [ ] Reads Playwright JSON reporter + trace files (not console logs)
 - [ ] Classifies only: `flaky` | `real_regression` | `environment`
@@ -217,3 +219,10 @@ Status: `not_started` — blocked on Phase 5. Do not start early.
 | 2026-08-17 | Phase 2 scaffold | `loanflow-qa` Playwright + TS strict; POM pages; factory; wait-helpers (timeout+backoff). |
 | 2026-08-17 | Phase 2 UI specs | `tests/ui`: apply-flow (@smoke), document-upload, status-tracking, auth. No locators in specs. |
 | 2026-08-17 | Phase 2 exit | `npx playwright test tests/ui` — 14 passed (Chromium). Phase 3 active, not started. |
+| 2026-08-17 | D4 locked | zod for API response schemas. |
+| 2026-08-17 | Phase 3 API suite | `api-client`, zod schemas, `assertSchema` on every response. Specs in `tests/api/`. Validation asserted as 400 (not 422). |
+| 2026-08-17 | Phase 3 exit | `npx playwright test tests/api` — 28 passed. Phase 4 active, not started. |
+| 2026-08-17 | Phase 4 CI | Root `.github/workflows/smoke.yml` (PR, `@smoke`, HTML artifact) and `regression.yml` (main, 3 shards, HTML artifacts). Branch protection steps in `docs/ci.md`. |
+| 2026-08-17 | Clone DX | `loanflow/scripts/ensure-env.cjs` copies `.env.example` on seed; Playwright `dev-ready.cjs` waits for :3000 and :4000. |
+| 2026-08-17 | Phase 4 verify | `npx playwright test --grep @smoke` — 4 passed (~9s). |
+| 2026-08-17 | Phase 5 docs | Root README (run app/tests/CI + polling vs sleep); `docs/architecture.md`, `docs/test-strategy.md`, `docs/ci.md`. Phase 6 active, not started. |

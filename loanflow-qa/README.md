@@ -1,12 +1,16 @@
 # loanflow-qa
 
-Playwright + TypeScript UI suite for LoanFlow.
+Playwright + TypeScript suite for LoanFlow. UI tests use the Page Object Model. API tests hit Express on `:4000` and validate every JSON body with zod.
 
 ```bash
 cd loanflow-qa
 npm install
 npx playwright install chromium
 npx playwright test tests/ui
+npx playwright test tests/api
+npx playwright test --grep @smoke
 ```
 
-The config starts `loanflow` (`npm run dev`) unless it is already running on :3000.
+If LoanFlow is not running, Playwright starts `loanflow` and waits for `:3000` and `:4000`.
+
+See the [root README](../README.md) for polling vs sleep, and [docs/test-strategy.md](../docs/test-strategy.md) for coverage.

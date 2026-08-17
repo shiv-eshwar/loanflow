@@ -5,6 +5,7 @@ dist/
 *.db-journal
 .env
 .DS_Store
+*.tsbuildinfo
 .cursor/
 uploads/
 coverage/

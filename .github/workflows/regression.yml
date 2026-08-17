@@ -1,0 +1,57 @@
+name: Regression
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: regression-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  regression:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3]
+    env:
+      CI: true
+      JWT_SECRET: dev-only-change-me
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: |
+            loanflow/package-lock.json
+            loanflow-qa/package-lock.json
+
+      - name: Install and seed app
+        working-directory: loanflow
+        run: |
+          npm install
+          npx --workspace=api prisma generate
+          npm run db:seed
+
+      - name: Install QA suite
+        working-directory: loanflow-qa
+        run: |
+          npm install
+          npx playwright install --with-deps chromium
+
+      - name: Run full suite (shard ${{ matrix.shard }}/3)
+        working-directory: loanflow-qa
+        run: npx playwright test --shard=${{ matrix.shard }}/3
+
+      - name: Upload Playwright HTML report
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-regression-${{ matrix.shard }}
+          path: loanflow-qa/playwright-report
+          retention-days: 14

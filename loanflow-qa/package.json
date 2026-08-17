@@ -3,7 +3,9 @@
   "private": true,
   "scripts": {
     "test": "playwright test tests/ui",
-    "test:smoke": "playwright test tests/ui --grep @smoke",
+    "test:api": "playwright test tests/api",
+    "test:all": "playwright test",
+    "test:smoke": "playwright test --grep @smoke",
     "test:headed": "playwright test tests/ui --headed"
   },
   "devDependencies": {
@@ -11,6 +13,7 @@
     "@types/jsonwebtoken": "^9.0.9",
     "@types/node": "^22.15.3",
     "jsonwebtoken": "^9.0.2",
-    "typescript": "^5.8.3"
+    "typescript": "^5.8.3",
+    "zod": "^3.24.4"
   }
 }

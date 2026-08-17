@@ -1,6 +1,6 @@
-# LoanFlow
+# LoanFlow app
 
-Minimal loan-origination app (test target for `loanflow-qa`).
+Minimal loan-origination **test target**. Keep this small; new behavior belongs in `what_this.md` first.
 
 ```bash
 cd loanflow
@@ -12,7 +12,4 @@ npm run dev
 - Web: http://localhost:3000
 - API: http://localhost:4000
 
-Seed users (password for both: `Password123!`):
-
-- `qa@loanflow.test`
-- `other@loanflow.test`
+Seed: `qa@loanflow.test` / `other@loanflow.test` (password `Password123!`).

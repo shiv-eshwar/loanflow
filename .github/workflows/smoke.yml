@@ -1,0 +1,52 @@
+name: Smoke
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: smoke-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      CI: true
+      JWT_SECRET: dev-only-change-me
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: |
+            loanflow/package-lock.json
+            loanflow-qa/package-lock.json
+
+      - name: Install and seed app
+        working-directory: loanflow
+        run: |
+          npm install
+          npx --workspace=api prisma generate
+          npm run db:seed
+
+      - name: Install QA suite
+        working-directory: loanflow-qa
+        run: |
+          npm install
+          npx playwright install --with-deps chromium
+
+      - name: Run @smoke tests
+        working-directory: loanflow-qa
+        run: npx playwright test --grep @smoke
+
+      - name: Upload Playwright HTML report
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-smoke
+          path: loanflow-qa/playwright-report
+          retention-days: 14

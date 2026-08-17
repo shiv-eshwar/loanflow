@@ -6,8 +6,13 @@ export default defineConfig({
   fullyParallel: true,
   forbidOnly: Boolean(process.env.CI),
   retries: process.env.CI ? 1 : 0,
+  workers: process.env.CI ? 2 : undefined,
   timeout: 45_000,
-  reporter: [["list"], ["html", { open: "never" }]],
+  reporter: [
+    ["list"],
+    ["html", { open: "never" }],
+    ["json", { outputFile: "test-results/results.json" }],
+  ],
   use: {
     baseURL: "http://localhost:3000",
     trace: "on-first-retry",
@@ -19,7 +24,7 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: "npm run dev",
+    command: "node scripts/dev-ready.cjs",
     cwd: path.join(__dirname, "../loanflow"),
     url: "http://localhost:3000",
     reuseExistingServer: !process.env.CI,
