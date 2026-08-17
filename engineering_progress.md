@@ -22,13 +22,13 @@ Status values: `not_started` | `active` | `blocked` | `done`
 
 | Field | Value |
 |---|---|
-| Active phase | **1 — Target app** |
+| Active phase | **2 — Playwright UI suite** |
 | Overall status | `active` |
 | Last updated | 2026-08-17 |
-| Last completed item | GitHub repo `loanflow-qa` created |
+| Last completed item | Phase 1 exit — target app verified |
 | Blockers | none |
 
-Implementing Phase 1 (target app). No Playwright yet. GitHub: https://github.com/shiv-eshwar/loanflow-qa
+Phase 1 is `done`. Phase 2 is active but **not started**. Do not add Playwright until asked. GitHub: https://github.com/shiv-eshwar/loanflow
 
 ---
 
@@ -55,50 +55,50 @@ Do not silently pick these. Confirm with the user, then move the decision into *
 
 ## Phase 1 — Target app (LoanFlow)
 
-Status: `active`
+Status: `done`
 
 Skeleton: frontend + backend + DB, runs locally, manually verified. Keep the app small. No Playwright in this phase.
 
 ### 1.1 Scaffold and data
 
-- [ ] Repo layout created (`loanflow/` app; `loanflow-qa/` folder reserved or empty until Phase 2)
-- [ ] TypeScript strict mode in the app
-- [ ] Prisma + SQLite
-- [ ] Tables: `users`, `applications`, `documents`
-- [ ] Seed: one test user + fixture applications in multiple statuses
+- [x] Repo layout created (`loanflow/` app; `loanflow-qa/` folder reserved or empty until Phase 2)
+- [x] TypeScript strict mode in the app
+- [x] Prisma + SQLite
+- [x] Tables: `users`, `applications`, `documents`
+- [x] Seed: one test user + fixture applications in multiple statuses
 
 ### 1.2 Auth and API (6–8 endpoints, currently 7)
 
-- [ ] `POST /api/auth/login` → JWT
-- [ ] `POST /api/applications` — create (`draft`)
-- [ ] `GET /api/applications/:id` — owner-only
-- [ ] `GET /api/applications` — auth required, paginated
-- [ ] `POST /api/applications/:id/documents` — multipart; PDF/JPG; size/type validation
-- [ ] `PUT /api/applications/:id/status` — state-machine validated
-- [ ] `GET /api/applications/:id/status` — poll; randomized 1–5s underwriting delay
+- [x] `POST /api/auth/login` → JWT
+- [x] `POST /api/applications` — create (`draft`)
+- [x] `GET /api/applications/:id` — owner-only
+- [x] `GET /api/applications` — auth required, paginated
+- [x] `POST /api/applications/:id/documents` — multipart; PDF/JPG; size/type validation
+- [x] `PUT /api/applications/:id/status` — state-machine validated
+- [x] `GET /api/applications/:id/status` — poll; randomized 1–5s underwriting delay
 
 ### 1.3 State machine
 
 Legal: `draft → submitted → under_review → approved | rejected`
 
-- [ ] Legal transitions accepted
-- [ ] Illegal transitions rejected (skip, backwards, terminal) with 400/409
-- [ ] Auth: 401 unauthenticated; 403 wrong-user (authorization, not just authentication)
+- [x] Legal transitions accepted
+- [x] Illegal transitions rejected (skip, backwards, terminal) with 400/409
+- [x] Auth: 401 unauthenticated; 403 wrong-user (authorization, not just authentication)
 
 ### 1.4 Frontend (3–4 pages + implied login)
 
-- [ ] `/apply` — borrower info, loan amount, property type, income; client + server validation
-- [ ] `/apply/[id]/documents` — mock upload, PDF/JPG, size/type validation
-- [ ] `/applications/[id]` — status page; polls every N seconds
-- [ ] `/dashboard` — auth-gated list; filter by status
-- [ ] `/login` — only if D2 is locked yes
+- [x] `/apply` — borrower info, loan amount, property type, income; client + server validation
+- [x] `/apply/[id]/documents` — mock upload, PDF/JPG, size/type validation
+- [x] `/applications/[id]` — status page; polls every N seconds
+- [x] `/dashboard` — auth-gated list; filter by status
+- [x] `/login` — only if D2 is locked yes
 
 ### 1.5 Manual verification (phase exit)
 
-- [ ] App starts locally (frontend + API + DB)
-- [ ] Happy path clicked: login → apply → upload → status reaches approved/rejected
-- [ ] Illegal status transition rejected when exercised against the API
-- [ ] Unauthenticated dashboard redirects; wrong-user cannot read another user's application
+- [x] App starts locally (frontend + API + DB)
+- [x] Happy path clicked: login → apply → upload → status reaches approved/rejected
+- [x] Illegal status transition rejected when exercised against the API
+- [x] Unauthenticated dashboard redirects; wrong-user cannot read another user's application
 
 **Phase 1 exit:** all boxes above checked. Do not start Phase 2 until then.
 
@@ -106,7 +106,7 @@ Legal: `draft → submitted → under_review → approved | rejected`
 
 ## Phase 2 — Playwright UI suite
 
-Status: `not_started` — blocked on Phase 1
+Status: `active` — not started
 
 POM from day 1. No `page.locator()` in `*.spec.ts`. No `page.waitForTimeout()` for status polling.
 
@@ -208,3 +208,9 @@ Status: `not_started` — blocked on Phase 5. Do not start early.
 | 2026-08-17 | Tracker created | `engineering_progress.md` added. No implementation yet. Phase 1 is active but not started. Decisions D1–D5 still open. |
 | 2026-08-17 | D1–D3 locked | Layout `loanflow/` + `loanflow-qa/`; `/login` yes; Express API. D4/D5 still open. Phase 1 implementation started. |
 | 2026-08-17 | GitHub repo | Created public repo `shiv-eshwar/loanflow-qa`. Single repo for now (D1); split later if needed. |
+| 2026-08-17 | Phase 1 scaffold | `loanflow/` npm workspaces (`web`, `api`); `loanflow-qa/` placeholder README. |
+| 2026-08-17 | Prisma + seed | `users`, `applications`, `documents`. Seed users `qa@loanflow.test` and `other@loanflow.test` (Password123!), fixtures in every status. |
+| 2026-08-17 | Express API | 7 endpoints, JWT, 409 illegal transitions, 401/403, 1–5s underwriting on GET /status. |
+| 2026-08-17 | Next.js UI | `/login`, `/apply`, `/apply/[id]/documents`, `/applications/[id]` (2s poll), `/dashboard`. Rewrite `/api/*` → :4000. |
+| 2026-08-17 | Phase 1 exit | Verified: login, create, upload PDF, poll submitted → under_review → approved; 400/401/403/409; all UI routes 200. Phase 2 active, not started. |
+| 2026-08-17 | Repo rename | GitHub repo renamed to `shiv-eshwar/loanflow`. Root README added. |
