@@ -2,16 +2,17 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { clearToken, getToken } from "@/lib/auth";
 
 export function Header() {
   const router = useRouter();
+  const pathname = usePathname();
   const [authed, setAuthed] = useState(false);
 
   useEffect(() => {
     setAuthed(Boolean(getToken()));
-  }, []);
+  }, [pathname]);
 
   function logout() {
     clearToken();

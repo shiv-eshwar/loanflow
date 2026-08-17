@@ -68,25 +68,26 @@ export default function DashboardPage() {
             </tr>
           </thead>
           <tbody>
-            {items.map((item) => (
-              <tr key={item.id} className="border-t border-slate-100">
-                <td className="px-4 py-3">
-                  <Link className="hover:underline" href={`/applications/${item.id}`}>
-                    {item.borrowerName}
-                  </Link>
-                </td>
-                <td className="px-4 py-3">${item.loanAmount.toLocaleString()}</td>
-                <td className="px-4 py-3">
-                  <StatusBadge status={item.status} />
-                </td>
-              </tr>
-            ))}
             {items.length === 0 ? (
               <tr>
                 <td className="px-4 py-6 text-slate-500" colSpan={3}>
                   No applications
                 </td>
               </tr>
+            ) : (
+              items.map((item) => (
+                <tr key={item.id} className="border-t border-slate-100">
+                  <td className="px-4 py-3">
+                    <Link className="hover:underline" href={`/applications/${item.id}`}>
+                      {item.borrowerName}
+                    </Link>
+                  </td>
+                  <td className="px-4 py-3">${item.loanAmount.toLocaleString()}</td>
+                  <td className="px-4 py-3">
+                    <StatusBadge status={item.status} />
+                  </td>
+                </tr>
+              ))
             )}
           </tbody>
         </table>

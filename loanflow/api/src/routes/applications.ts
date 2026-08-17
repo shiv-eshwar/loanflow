@@ -101,7 +101,9 @@ applicationsRouter.get("/", async (req, res) => {
 
   const where = {
     userId: req.userId,
-    ...(statusParam ? { status: statusParam } : {}),
+    ...(statusParam && isApplicationStatus(statusParam)
+      ? { status: statusParam }
+      : {}),
   };
 
   const [total, items] = await Promise.all([

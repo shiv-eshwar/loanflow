@@ -22,13 +22,13 @@ Status values: `not_started` | `active` | `blocked` | `done`
 
 | Field | Value |
 |---|---|
-| Active phase | **2 — Playwright UI suite** |
+| Active phase | **3 — Playwright API suite** |
 | Overall status | `active` |
 | Last updated | 2026-08-17 |
-| Last completed item | Phase 1 exit — target app verified |
+| Last completed item | Phase 2 exit — 14 UI tests passed |
 | Blockers | none |
 
-Phase 1 is `done`. Phase 2 is active but **not started**. Do not add Playwright until asked. GitHub: https://github.com/shiv-eshwar/loanflow
+Phase 2 is `done`. Phase 3 is active but **not started**. D4 (zod vs ajv) still open. GitHub: https://github.com/shiv-eshwar/loanflow
 
 ---
 
@@ -106,25 +106,25 @@ Legal: `draft → submitted → under_review → approved | rejected`
 
 ## Phase 2 — Playwright UI suite
 
-Status: `active` — not started
+Status: `done`
 
 POM from day 1. No `page.locator()` in `*.spec.ts`. No `page.waitForTimeout()` for status polling.
 
 ### 2.1 Framework skeleton
 
-- [ ] `loanflow-qa/` scaffold; `playwright.config.ts`; TypeScript strict
-- [ ] Page objects: `ApplyPage`, `DocumentsPage`, `StatusPage`, `DashboardPage` (and login page if D2 is yes)
-- [ ] `fixtures/test-users.ts`
-- [ ] `fixtures/application-factory.ts` — all test data comes from here
-- [ ] `utils/wait-helpers.ts` — explicit polling with timeout + backoff
+- [x] `loanflow-qa/` scaffold; `playwright.config.ts`; TypeScript strict
+- [x] Page objects: `ApplyPage`, `DocumentsPage`, `StatusPage`, `DashboardPage` (and login page if D2 is yes)
+- [x] `fixtures/test-users.ts`
+- [x] `fixtures/application-factory.ts` — all test data comes from here
+- [x] `utils/wait-helpers.ts` — explicit polling with timeout + backoff
 
 ### 2.2 UI specs (`tests/ui/` only)
 
-- [ ] `apply-flow.spec.ts` — happy path apply → upload → poll to approved; `@smoke` on critical path
-- [ ] `document-upload.spec.ts` — type/size validation
-- [ ] `status-tracking.spec.ts` — UI reflects state machine; no illegal transitions surfaced
-- [ ] `auth.spec.ts` — protected redirect, invalid login, expired token
-- [ ] Form validation: required fields, invalid loan amount, invalid property type
+- [x] `apply-flow.spec.ts` — happy path apply → upload → poll to approved; `@smoke` on critical path
+- [x] `document-upload.spec.ts` — type/size validation
+- [x] `status-tracking.spec.ts` — UI reflects state machine; no illegal transitions surfaced
+- [x] `auth.spec.ts` — protected redirect, invalid login, expired token
+- [x] Form validation: required fields, invalid loan amount, invalid property type
 
 **Phase 2 exit:** UI suite runs locally against the app. POM + wait-helpers in place. No locators in spec files.
 
@@ -132,7 +132,7 @@ POM from day 1. No `page.locator()` in `*.spec.ts`. No `page.waitForTimeout()` f
 
 ## Phase 3 — Playwright API suite + schema validation
 
-Status: `not_started` — blocked on Phase 2
+Status: `active` — not started
 
 ### 3.1 API harness
 
@@ -214,3 +214,6 @@ Status: `not_started` — blocked on Phase 5. Do not start early.
 | 2026-08-17 | Next.js UI | `/login`, `/apply`, `/apply/[id]/documents`, `/applications/[id]` (2s poll), `/dashboard`. Rewrite `/api/*` → :4000. |
 | 2026-08-17 | Phase 1 exit | Verified: login, create, upload PDF, poll submitted → under_review → approved; 400/401/403/409; all UI routes 200. Phase 2 active, not started. |
 | 2026-08-17 | Repo rename | GitHub repo renamed to `shiv-eshwar/loanflow`. Root README added. |
+| 2026-08-17 | Phase 2 scaffold | `loanflow-qa` Playwright + TS strict; POM pages; factory; wait-helpers (timeout+backoff). |
+| 2026-08-17 | Phase 2 UI specs | `tests/ui`: apply-flow (@smoke), document-upload, status-tracking, auth. No locators in specs. |
+| 2026-08-17 | Phase 2 exit | `npx playwright test tests/ui` — 14 passed (Chromium). Phase 3 active, not started. |

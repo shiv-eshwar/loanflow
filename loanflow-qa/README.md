@@ -1,5 +1,12 @@
 # loanflow-qa
 
-Playwright + TypeScript automation suite for LoanFlow.
+Playwright + TypeScript UI suite for LoanFlow.
 
-**Phase 2 — not started.** Do not add tests until Phase 1 (the target app) is done and checked off in `engineering_progress.md`.
+```bash
+cd loanflow-qa
+npm install
+npx playwright install chromium
+npx playwright test tests/ui
+```
+
+The config starts `loanflow` (`npm run dev`) unless it is already running on :3000.

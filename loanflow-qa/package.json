@@ -1,0 +1,16 @@
+{
+  "name": "loanflow-qa",
+  "private": true,
+  "scripts": {
+    "test": "playwright test tests/ui",
+    "test:smoke": "playwright test tests/ui --grep @smoke",
+    "test:headed": "playwright test tests/ui --headed"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.52.0",
+    "@types/jsonwebtoken": "^9.0.9",
+    "@types/node": "^22.15.3",
+    "jsonwebtoken": "^9.0.2",
+    "typescript": "^5.8.3"
+  }
+}
